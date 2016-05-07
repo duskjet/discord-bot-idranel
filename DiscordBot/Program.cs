@@ -8,6 +8,7 @@ using Discord.Audio;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Diagnostics;
+using DiscordBot.Configuration;
 
 namespace DiscordBot
 {
@@ -15,11 +16,13 @@ namespace DiscordBot
     {
         private static DiscordClient client;
 
+        private static readonly string AppKey = "MTc1OTQ0NTg0NTE2MzM3NjY1.CgY0qg.Y2VMmtQpGCR0DrnYlLvFQLqSDUQ";
+
         static void Main(string[] args) => new Program().Start(args);
         public void Start(string [] args)
         {
             var config = new Configuration.Configuration(args);
-
+            
             client = new DiscordClient()
                 .UsingAudio(audio => { audio.Mode = AudioMode.Outgoing; })
                 .UsingModules();
@@ -43,10 +46,11 @@ namespace DiscordBot
 
             client.ExecuteAndWait(async () =>
             {
-                await client.Connect("MTc1OTQ0NTg0NTE2MzM3NjY1.CgY0qg.Y2VMmtQpGCR0DrnYlLvFQLqSDUQ");
+                await client.Connect(AppKey);
                 await client.WaitForServers().ConfigureAwait(false);
 
                 client.AddModule<Modules.GachimuchiModule>(name: "Gachimuchi Ultimate Medley link generator");
+                client.AddModule<Modules.VoiceModule>();
             });
         }
 

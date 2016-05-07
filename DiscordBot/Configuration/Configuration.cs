@@ -7,16 +7,14 @@ namespace DiscordBot.Configuration
     {
         private static Configuration _config;
 
-        private static Dictionary<string, Dictionary<string, Action<Configuration, string>>> commands = 
-            new Dictionary<string, Dictionary<string, Action<Configuration, string>>>()
+        private static Dictionary<string, Option> commands = new Dictionary<string, Option>()
         {
-            {"-voice", new Dictionary<string, Action<Configuration, string>>() {
-                { "--server", (c, s) => { c.Voice.Server = s; } },
-                { "--channel", (c, s) => { c.Voice.Channel = s; } }
-            } }
+            { "-v", new Option((c, s) => { c.Voice.Server = s; }) },
+            { "-c", new Option((c, s) => { c.Voice.Channel = s; }, new string[] { "-v" }) }
         };
 
         public static Configuration Current { get { return _config; } }
+
         public VoiceConfiguration Voice { get; set; }
 
         public Configuration(string[] args)
@@ -25,20 +23,30 @@ namespace DiscordBot.Configuration
 
             for (int i = 0; i < args.Length; i++)
             {
-                var command = args[i];
+                if (commands.ContainsKey(args[i]))
+                {
+                    var cmd = args[i];
+                    var value = args[i + 1];
 
-                if (commands.ContainsKey(command))
-                    for (int j = i + 1; j < i + commands[command].Count; j += 2)
-                    {
-                        var parameter = args[j];
-                        if (commands[command].ContainsKey(parameter))
-                        {
-                            commands[command][parameter](this, args[j + 1]);
-                        }
-                    }
+                    if (commands[cmd].Dependencies != null) ValidateDependencies(commands[cmd].Dependencies, cmd, args);
+
+                    commands[cmd].Action(this, value);
+                }
             }
 
             _config = this;
+        }
+
+        private void ValidateDependencies(string[] dependencies, string command, string[] args)
+        {
+            foreach (var dep in dependencies)
+            {
+                var match = Array.Find(args, s => s.Equals(dep));
+                if (string.IsNullOrEmpty(match))
+                {
+                    throw new ArgumentNullException(dep, $"Option \"{command}\" depends upon option \"{dep}\" that is not present.");
+                }
+            }
         }
     }
 
@@ -46,5 +54,16 @@ namespace DiscordBot.Configuration
     {
         public string Server { get; set; }
         public string Channel { get; set; }
+    }
+
+    internal class Option
+    {
+        public Option(Action<Configuration, string> action, string[] dependencies = null)
+        {
+            this.Action = action;
+            this.Dependencies = dependencies;
+        }
+        public string[] Dependencies { get; }
+        public Action<Configuration, string> Action { get; }
     }
 }
