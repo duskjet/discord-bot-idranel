@@ -30,9 +30,6 @@ namespace DiscordBot.Modules
             { "https://youtu.be/ZdRTaYrmIIM?t=167" },
             { "https://youtu.be/ZdRTaYrmIIM?t=269" },
             { "https://youtu.be/ZdRTaYrmIIM?t=402" },
-            { "https://youtu.be/e2VXvqjGXjo" },
-            { "https://youtu.be/kw7IBJaN6rQ" },
-            { "https://youtu.be/AnbTd2WKYdY" },
         };
 
         public static async Task Gachimuchi(this MessageEventArgs args)
