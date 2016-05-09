@@ -16,7 +16,6 @@ namespace DiscordBot
     {
         private static DiscordClient client;
 
-
         private static readonly string AppKey = "MTc1OTQ0NTg0NTE2MzM3NjY1.CgY0qg.Y2VMmtQpGCR0DrnYlLvFQLqSDUQ";
 
         static void Main(string[] args) => new Program().Start(args);
@@ -50,12 +49,8 @@ namespace DiscordBot
                 await client.Connect(AppKey);
                 await client.WaitForServers().ConfigureAwait(false);
 
-                
                 client.AddModule<Modules.GachimuchiModule>(name: "Gachimuchi Ultimate Medley link generator");
                 client.AddModule<Modules.VoiceModule>();
-                client.AddModule<Modules.RollModule>();
-                client.SetGame("Deep Dark Fantasy");
-               
             });
         }
 
