@@ -88,6 +88,7 @@
   <ItemGroup>
     <Compile Include="Configuration\Configuration.cs" />
     <Compile Include="Modules\Gachimuchi.cs" />
+    <Compile Include="Modules\Roll.cs" />
     <Compile Include="Modules\Voice.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
